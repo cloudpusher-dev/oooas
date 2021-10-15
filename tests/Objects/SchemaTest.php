@@ -7,6 +7,7 @@ namespace GoldSpecDigital\ObjectOrientedOAS\Tests\Objects;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Discriminator;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\ExternalDocs;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\MediaType;
+use GoldSpecDigital\ObjectOrientedOAS\Objects\OneOf;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Schema;
 use GoldSpecDigital\ObjectOrientedOAS\Objects\Xml;
 use GoldSpecDigital\ObjectOrientedOAS\Tests\TestCase;
@@ -207,6 +208,14 @@ class SchemaTest extends TestCase
         $property = Schema::string('id')
             ->format(Schema::FORMAT_UUID);
 
+        $thisKind = Schema::create('kind')->enum('this');
+        $schema1 = Schema::object('this')->required('kind')->properties($thisKind);
+        $thatKind = Schema::create('kind')->enum('that');
+        $schema2 = Schema::object('that')->required('kind')->properties($thatKind);
+
+        $oneOf = OneOf::create()
+            ->schemas($schema1, $schema2);
+
         $schema = Schema::create()
             ->title('Schema title')
             ->description('Schema description')
@@ -218,7 +227,8 @@ class SchemaTest extends TestCase
             ->maxProperties(10)
             ->minProperties(1)
             ->nullable()
-            ->discriminator(Discriminator::create()->propertyName('Property name'))
+            ->discriminator(Discriminator::create()->propertyName('kind'))
+            ->oneOf($oneOf)
             ->readOnly()
             ->writeOnly()
             ->xml(Xml::create())
@@ -248,7 +258,27 @@ class SchemaTest extends TestCase
                 'maxProperties' => 10,
                 'minProperties' => 1,
                 'nullable' => true,
-                'discriminator' => ['propertyName' => 'Property name'],
+                'discriminator' => ['propertyName' => 'kind'],
+                'oneOf' => [
+                    [
+                        'type' => 'object',
+                        'properties' => [
+                            'kind' => [
+                                'enum' => ['this'],
+                            ],
+                        ],
+                        'required' => ['kind'],
+                    ],
+                    [
+                        'type' => 'object',
+                        'properties' => [
+                            'kind' => [
+                                'enum' => ['that'],
+                            ],
+                        ],
+                        'required' => ['kind'],
+                    ],
+                ],
                 'readOnly' => true,
                 'writeOnly' => true,
                 'xml' => [],

@@ -768,7 +768,7 @@ class Schema extends BaseObject implements SchemaContract
             $properties[$property->objectId] = $property->toArray();
         }
 
-        return Arr::filter([
+        $arr = [
             'title' => $this->title,
             'description' => $this->description,
             'enum' => $this->enum,
@@ -794,13 +794,17 @@ class Schema extends BaseObject implements SchemaContract
             'minProperties' => $this->minProperties,
             'nullable' => $this->nullable,
             'discriminator' => $this->discriminator,
-            'oneOf' => $this->oneOf,
             'readOnly' => $this->readOnly,
             'writeOnly' => $this->writeOnly,
             'xml' => $this->xml,
             'externalDocs' => $this->externalDocs,
             'example' => $this->example,
             'deprecated' => $this->deprecated,
-        ]);
+        ];
+        if (isset($this->oneOf)) {
+            $arr['oneOf'] = $this->oneOf->toArray()['oneOf'];
+        }
+
+        return Arr::filter($arr);
     }
 }
