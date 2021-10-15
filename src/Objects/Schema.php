@@ -34,6 +34,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Utilities\Arr;
  * @property int|null $minProperties
  * @property bool|null $nullable
  * @property \GoldSpecDigital\ObjectOrientedOAS\Objects\Discriminator|null $discriminator
+ * @property \GoldSpecDigital\ObjectOrientedOAS\Objects\OneOf|null $oneOf
  * @property bool|null $readOnly
  * @property bool|null $writeOnly
  * @property \GoldSpecDigital\ObjectOrientedOAS\Objects\Xml|null $xml
@@ -185,6 +186,11 @@ class Schema extends BaseObject implements SchemaContract
      * @var \GoldSpecDigital\ObjectOrientedOAS\Objects\Discriminator|null
      */
     protected $discriminator;
+
+    /**
+     * @var \GoldSpecDigital\ObjectOrientedOAS\Objects\OneOf|null
+     */
+    protected $oneOf;
 
     /**
      * @var bool|null
@@ -662,6 +668,19 @@ class Schema extends BaseObject implements SchemaContract
     }
 
     /**
+     * @param \GoldSpecDigital\ObjectOrientedOAS\Objects\OneOf|null $oneOf
+     * @return static
+     */
+    public function oneOf(?OneOf $oneOf): self
+    {
+        $instance = clone $this;
+
+        $instance->oneOf = $oneOf;
+
+        return $instance;
+    }
+
+    /**
      * @param bool|null $readOnly
      * @return static
      */
@@ -775,6 +794,7 @@ class Schema extends BaseObject implements SchemaContract
             'minProperties' => $this->minProperties,
             'nullable' => $this->nullable,
             'discriminator' => $this->discriminator,
+            'oneOf' => $this->oneOf,
             'readOnly' => $this->readOnly,
             'writeOnly' => $this->writeOnly,
             'xml' => $this->xml,
