@@ -9,6 +9,7 @@ use GoldSpecDigital\ObjectOrientedOAS\Utilities\Arr;
 
 /**
  * @property \GoldSpecDigital\ObjectOrientedOAS\Objects\Schema[]|null $schemas
+ * @property \GoldSpecDigital\ObjectOrientedOAS\Objects\Discriminator|null $discriminator
  */
 abstract class SchemaComposition extends BaseObject implements SchemaContract
 {
@@ -16,6 +17,11 @@ abstract class SchemaComposition extends BaseObject implements SchemaContract
      * @var \GoldSpecDigital\ObjectOrientedOAS\Objects\Schema[]|null
      */
     protected $schemas;
+
+    /**
+     * @var \GoldSpecDigital\ObjectOrientedOAS\Objects\Discriminator|null
+     */
+    protected $discriminator;
 
     /**
      * @param \GoldSpecDigital\ObjectOrientedOAS\Objects\Schema[] $schemas
@@ -26,6 +32,19 @@ abstract class SchemaComposition extends BaseObject implements SchemaContract
         $instance = clone $this;
 
         $instance->schemas = $schemas ?: null;
+
+        return $instance;
+    }
+
+    /**
+     * @param \GoldSpecDigital\ObjectOrientedOAS\Objects\Discriminator|null $discriminator
+     * @return static
+     */
+    public function discriminator(?Discriminator $discriminator): self
+    {
+        $instance = clone $this;
+
+        $instance->discriminator = $discriminator;
 
         return $instance;
     }
@@ -42,6 +61,7 @@ abstract class SchemaComposition extends BaseObject implements SchemaContract
     {
         return Arr::filter([
             $this->compositionType() => $this->schemas,
+            'discriminator' => $this->discriminator,
         ]);
     }
 }
